@@ -7,18 +7,11 @@ It is deliberately kept as plain data + short functions, not buried
 inside a prompt, so the rules are inspectable and testable on their
 own — independent of whatever LLM is or isn't available.
 
-Design principle: authority is per-field, not per-source. A source
-can be authoritative for one field and worthless for another (the
-inventory DB is the system of record for "what is this asset" but a
-poor source for "where is this asset right now").
 """
 
 from datetime import timedelta
 
-# Fields where one source is, by policy, simply the authority —
-# no recency comparison needed, because the other sources either
-# don't report this field or aren't in a position to know it
-# better than the authority does.
+
 FIELD_AUTHORITY: dict[str, str] = {
     "fault_status": "fault_reporting",
     "condition": "maintenance_log",
