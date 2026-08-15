@@ -1,18 +1,11 @@
 """
 Optional LLM narration layer.
-
 The reconciliation decision itself is made entirely by the deterministic
 rule engine in reconciler.py — that logic must work with zero external
 dependencies, because it's the part that has to be defensible and
 reproducible. This module's only job is to turn the structured decision
 trail into a short, readable paragraph for a human reviewer, using
-Google's Gemini API (free tier: https://aistudio.google.com/apikey).
-
-If GEMINI_API_KEY isn't set, or the `google-genai` package isn't
-installed, or the API call fails for any reason, this falls back to a
-template-based summary built from the same structured data. Nothing
-about the reconciliation result depends on the LLM being available —
-it only affects how nicely the explanation reads.
+Google's Gemini API.
 """
 
 import os
