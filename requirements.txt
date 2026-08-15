@@ -1,0 +1,4 @@
+# Core reconciliation logic has zero dependencies beyond the standard library.
+# These are only needed for optional LLM narration and running tests.
+google-genai>=2.0.0
+pytest>=8.0.0
