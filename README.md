@@ -1,26 +1,40 @@
-# Asset State Reconciliation Agent
+## Running it
 
-An agent that pulls asset-state reports from four independent, conflicting
-data sources and produces a single reconciled record — with a fully
-auditable explanation of *why* it trusted what it trusted for every field.
+```bash
+# 1. Clone and enter the project
+git clone https://github.com/m-munir1/Asset-reconciliation-agent.git
+cd Asset-reconciliation-agent
 
-## The problem this solves
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
-Four systems know things about the same physical asset, and they don't
-agree:
+# 3. Install dependencies
+pip install -r requirements.txt
 
-- **`location_service`** — RTLS/beacon pings. Fast-updating, but goes stale
-  silently if a beacon drops signal (it doesn't know it's wrong).
-- **`maintenance_log`** — technician entries. Slow, but reflects direct
-  physical inspection (photo + technician ID attached).
-- **`inventory_db`** — system of record for asset classification and
-  ownership. Rarely wrong about *what* an asset is, frequently wrong about
-  *where* it currently is (only refreshed at quarterly audits).
-- **`fault_reporting`** — operator-submitted incident tickets. The only
-  source with both the mechanism and incentive to surface faults fast.
+# 4. Run the agent on both demo assets
+python3 main.py
 
-No single source is "the truth." The agent's job is to decide, per field,
-which source to believe, detect when they contradict each other, ask
-follow-up questions when it isn't sure, and write down its reasoning in a
-form someone else can check later.
+# 5. Run a single asset
+python3 main.py AST-1042
 
+# 6. Query the full audit trail for one field
+python3 main.py AST-1042 --query location
+
+# 7. Run the test suite
+python3 -m pytest tests/ -v
+```
+
+No API key is required for any of the above — the core reconciliation
+logic has zero external dependencies and runs fully offline.
+
+### Optional: enable Gemini-written summaries
+
+```bash
+export GEMINI_API_KEY="your-key-here"   # get a free key at https://aistudio.google.com/apikey
+python3 main.py
+```
+
+Without a key, the "Reviewer Summary" section falls back to a plain
+template built from the same structured data — nothing about the
+reconciliation result depends on the LLM being available.
